@@ -454,7 +454,7 @@ taskq_thread(void *args)
 
         while (!kthread_should_stop()) {
 
-		add_wait_queue(&tq->tq_work_waitq, &wait);
+		add_wait_queue_exclusive(&tq->tq_work_waitq, &wait);
 		if (list_empty(&tq->tq_pend_list) &&
 		    list_empty(&tq->tq_prio_list)) {
 			spin_unlock_irqrestore(&tq->tq_lock, tq->tq_lock_flags);
