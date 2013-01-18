@@ -43,6 +43,7 @@ typedef enum {
 typedef struct {
         struct rw_semaphore rw_rwlock;
         kthread_t *rw_owner;
+        int rw_destroying;
 } krwlock_t;
 
 #define SEM(rwp)                        ((struct rw_semaphore *)(rwp))
@@ -112,11 +113,17 @@ RW_LOCK_HELD(krwlock_t *rwp)
                                                                         \
         __init_rwsem(SEM(rwp), #rwp, &__key);                           \
         spl_rw_clear_owner(rwp);                                        \
+        (rwp)->rw_destroying = 0;                                       \
 })
 
-#define rw_destroy(rwp)                                                 \
-({                                                                      \
-        VERIFY(!RW_LOCK_HELD(rwp));                                     \
+#define rw_destroy(rwp)                                                       \
+({                                                                            \
+        (rwp)->rw_destroying = 1;                                             \
+        if (RW_LOCK_HELD(rwp))                                                \
+                printk(KERN_ERR "Issue 1215: freeing rwlock held by %s(%d)\n",\
+                    (rwp)->rw_owner ? (rwp)->rw_owner->comm : "?",            \
+                    (rwp)->rw_owner ? (rwp)->rw_owner->pid  : 0);             \
+        VERIFY(!RW_LOCK_HELD(rwp));                                           \
 })
 
 #define rw_tryenter(rwp, rw)                                            \
@@ -154,6 +161,10 @@ RW_LOCK_HELD(krwlock_t *rwp)
 
 #define rw_exit(rwp)                                                    \
 ({                                                                      \
+        if ((rwp)->rw_destroying != 0) {                                \
+                printk(KERN_ERR "Issue 1215: dropping freed lock.\n");  \
+                spl_debug_dumpstack(NULL);                              \
+        }                                                               \
         if (RW_WRITE_HELD(rwp)) {                                       \
                 spl_rw_clear_owner(rwp);                                \
                 up_write(SEM(rwp));                                     \
