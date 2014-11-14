@@ -29,7 +29,6 @@
 #include <linux/proc_compat.h>
 #include <sys/types.h>
 #include <sys/time.h>
-#include <sys/kmem.h>
 #include <sys/mutex.h>
 
 #define KSTAT_STRLEN            31

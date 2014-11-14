@@ -25,8 +25,10 @@
 \*****************************************************************************/
 
 #include <sys/cred.h>
+#include <sys/kmem.h>
 #include <sys/vnode.h>
 #include <linux/falloc.h>
+#include <linux/file_compat.h>
 #include <spl-debug.h>
 
 #ifdef SS_DEBUG_SUBSYS

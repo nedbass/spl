@@ -35,7 +35,6 @@
 #include <linux/fs.h>
 #include <linux/fs_struct.h>
 #include <linux/mount.h>
-#include <sys/kmem.h>
 #include <sys/mutex.h>
 #include <sys/types.h>
 #include <sys/time.h>

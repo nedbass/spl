@@ -24,11 +24,12 @@
  *  Solaris Porting Layer (SPL) Proc Implementation.
 \*****************************************************************************/
 
-#include <sys/systeminfo.h>
+#include <sys/kmem.h>
 #include <sys/kstat.h>
+#include <sys/systeminfo.h>
 #include <linux/kmod.h>
-#include <linux/seq_file.h>
 #include <linux/proc_compat.h>
+#include <linux/seq_file.h>
 #include <linux/version.h>
 #include <spl-debug.h>
 

@@ -24,8 +24,9 @@
  *  Solaris Porting Layer (SPL) Kstat Implementation.
 \*****************************************************************************/
 
-#include <linux/seq_file.h>
+#include <sys/kmem.h>
 #include <sys/kstat.h>
+#include <linux/seq_file.h>
 #include <spl-debug.h>
 
 #ifdef SS_DEBUG_SUBSYS
